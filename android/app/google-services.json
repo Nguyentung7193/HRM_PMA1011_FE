@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "135036152047",
+    "project_id": "pma1011-d9be6",
+    "storage_bucket": "pma1011-d9be6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135036152047:android:b1cd1abb62ed5e12d7931a",
+        "android_client_info": {
+          "package_name": "com.hrm_pma1011"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-5Wvv65r_GyP0wZibB9E8EEnF_jNklnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
