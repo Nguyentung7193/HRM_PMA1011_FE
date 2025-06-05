@@ -71,3 +71,23 @@ export const createLeaveRequest = async (token: string, data: CreateLeaveRequest
     throw error;
   }
 };
+
+interface LoginRequest {
+  email: string;
+  password: string;
+  fcmToken: string;
+}
+
+interface LoginResponse {
+  accessToken: string;
+}
+
+export const login = async (data: LoginRequest) => {
+  try {
+    const response = await api.post<LoginResponse>('/auth/login', data);
+    return response.data;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};

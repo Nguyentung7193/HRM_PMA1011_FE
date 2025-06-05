@@ -1,20 +1,47 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, Alert} from 'react-native';
 import {RootStackParamList} from '../../../navigation/type';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import CustomInput from '../../../components/CustomInput';
 import CustomButton from '../../../components/CustomButton';
 import metrics from '../../../constants/metrics';
+import {login} from '../../../service/api/ApiService';
+import {getSavedFcmToken} from '../../../firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignInScreen'>;
 
 const SignInScreen = ({navigation}: Props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSignIn = () => {
-    console.log('Sign in with:', email, password);
-    navigation.replace('HomeScreen');
+  const handleSignIn = async () => {
+    try {
+      if (!email || !password) {
+        Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin');
+        return;
+      }
+
+      setLoading(true);
+      const fcmToken = await getSavedFcmToken();
+      if (!fcmToken) {
+        Alert.alert('Lỗi', 'Không thể lấy được token thiết bị');
+        return;
+      }
+      const response = await login({
+        email,
+        password,
+        fcmToken,
+      });
+      await AsyncStorage.setItem('auth_token', response.accessToken);
+      navigation.replace('HomeScreen');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Đã có lỗi xảy ra';
+      Alert.alert('Lỗi đăng nhập', errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,7 +65,10 @@ const SignInScreen = ({navigation}: Props) => {
           />
         </View>
 
-        <CustomButton title="Đăng nhập" onPress={handleSignIn} />
+        <CustomButton
+          title={loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+          onPress={handleSignIn}
+        />
       </View>
     </SafeAreaView>
   );

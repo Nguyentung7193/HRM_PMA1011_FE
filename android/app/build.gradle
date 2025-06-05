@@ -85,6 +85,20 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    
+    // Fix duplicate class issue
+configurations.all {
+    resolutionStrategy {
+        force 'androidx.core:core:1.13.1'
+        eachDependency { details ->
+            if (details.requested.group == 'com.android.support') {
+                details.useTarget "androidx.legacy:legacy-support-v4:1.0.0"
+            }
+        }
+    }
+    exclude group: 'com.android.support'
+}
+    
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -118,4 +132,3 @@ dependencies {
     }
 }
 apply plugin: 'com.google.gms.google-services'
-
