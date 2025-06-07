@@ -91,3 +91,50 @@ export const login = async (data: LoginRequest) => {
     throw error;
   }
 };
+
+export interface Notification {
+  _id: string;
+  userId: string;
+  title: string;
+  body: string;
+  data: {
+    requestId: string;
+    type: string;
+    status: string;
+  };
+  type: string;
+  status: string;
+  isRead: boolean;
+  readAt: string | null;
+  fcmMessageId: string;
+  priority: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface NotificationResponse {
+  success: boolean;
+  data: {
+    notifications: Notification[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      limit: number;
+    };
+  };
+}
+
+export const getNotifications = async (token: string) => {
+  try {
+    const response = await api.get<NotificationResponse>('/notify/list', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error('Get notifications error:', error);
+    throw error;
+  }
+};

@@ -1,9 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import metrics from '../constants/metrics';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
+import metrics from '../constants/metrics';
+import {RootStackParamList} from '../navigation/type';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const HomeHeader = () => {
+  const navigation = useNavigation<NavigationProp>();
+
   return (
     <View style={styles.header}>
       <View style={styles.userInfo}>
@@ -15,8 +22,9 @@ const HomeHeader = () => {
           <Text style={styles.userRole}>Nhân viên</Text>
         </View>
       </View>
-      
-      <TouchableOpacity style={styles.notificationButton}>
+      <TouchableOpacity
+        style={styles.notificationButton}
+        onPress={() => navigation.navigate('NotificationScreen')}>
         <Icon name="notifications" size={metrics.ms(24)} color="#2196F3" />
       </TouchableOpacity>
     </View>
