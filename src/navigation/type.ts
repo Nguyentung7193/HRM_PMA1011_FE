@@ -1,9 +1,6 @@
-export type RootStackParamList = {
-  SignInScreen: undefined;
-  HomeScreen: undefined;
-  CreateLeaveScreen: undefined;
-  LeaveScreen: undefined;
-};
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { CompositeNavigationProp } from '@react-navigation/native';
 
 export type BottomTabParamList = {
   Schedule: undefined;
@@ -12,3 +9,15 @@ export type BottomTabParamList = {
   Attendance: undefined;
   Profile: undefined;
 };
+
+export type RootStackParamList = {
+  SignInScreen: undefined;
+  HomeScreen: undefined;
+  CreateLeaveScreen: undefined;
+  NotificationScreen: undefined;
+};
+
+export type TabScreenNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<BottomTabParamList>,
+  NativeStackNavigationProp<RootStackParamList>
+>;

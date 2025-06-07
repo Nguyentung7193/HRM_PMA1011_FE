@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import metrics from '../../constants/metrics';
+import { TabScreenNavigationProp } from '../../navigation/type';
 import { getLeaveRequests, LeaveRequest } from '../../service/api/ApiService';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigation/type';
-
-type Props = NativeStackScreenProps<RootStackParamList, 'LeaveScreen'>;
 
 const getLeaveTypeText = (type: string) => {
   switch (type) {
@@ -19,7 +17,8 @@ const getLeaveTypeText = (type: string) => {
   }
 };
 
-const LeaveScreen = ({ navigation }: Props) => {
+const LeaveScreen = () => {
+  const navigation = useNavigation<TabScreenNavigationProp>();
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
