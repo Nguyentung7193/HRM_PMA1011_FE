@@ -15,14 +15,22 @@ import metrics from '../../constants/metrics';
 import {RootStackParamList} from '../../navigation/type';
 import {
   LeaveRequest,
+<<<<<<< HEAD
+  LeaveType,
+  UpdateLeaveRequest,
+  getLeaveDetail,
+  updateLeaveRequest,
+=======
   getLeaveDetail,
   deleteLeaveRequest,
+>>>>>>> 90903fddaa9869a93d45f6441f23eae2307bd270
 } from '../../service/api/ApiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EditLeaveModal from '../../components/EditLeaveModal';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'LeaveDetailScreen'>;
 
-const getLeaveTypeText = (type: string) => {
+const getLeaveTypeText = (type: LeaveType) => {
   switch (type) {
     case 'sick':
       return 'Nghỉ ốm';
@@ -38,6 +46,7 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
   const [leave, setLeave] = useState<LeaveRequest | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   useEffect(() => {
     fetchLeaveDetail();
@@ -77,6 +86,35 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
     navigation.goBack();
   };
 
+<<<<<<< HEAD
+  const handleUpdate = async (data: UpdateLeaveRequest) => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('auth_token');
+
+      if (!token) {
+        setError('Phiên đăng nhập đã hết hạn');
+        return;
+      }
+
+      await updateLeaveRequest(token, leaveId, data);
+      setIsEditModalVisible(false);
+      await fetchLeaveDetail();
+
+      Alert.alert('Thành công', 'Cập nhật đơn xin nghỉ thành công', [
+        {
+          text: 'OK',
+          onPress: () => console.log('Update success alert closed'),
+        },
+      ]);
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message || 'Không thể cập nhật đơn xin nghỉ';
+      Alert.alert('Lỗi', errorMessage);
+    } finally {
+      setLoading(false);
+    }
+=======
   const handleDelete = async () => {
     Alert.alert('Xác nhận xoá', 'Bạn có chắc chắn muốn xoá đơn xin nghỉ này?', [
       {
@@ -108,6 +146,7 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
         },
       },
     ]);
+>>>>>>> 90903fddaa9869a93d45f6441f23eae2307bd270
   };
 
   if (loading) {
@@ -195,6 +234,18 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
         </View>
       </ScrollView>
 
+      <EditLeaveModal
+        visible={isEditModalVisible}
+        onClose={() => setIsEditModalVisible(false)}
+        onSubmit={handleUpdate}
+        initialData={{
+          type: leave.type,
+          reason: leave.reason,
+          startDate: leave.startDate.split('T')[0],
+          endDate: leave.endDate.split('T')[0],
+        }}
+      />
+
       {leave.status === 'pending' && (
         <View style={styles.footer}>
           <TouchableOpacity
@@ -205,9 +256,7 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
 
           <TouchableOpacity
             style={[styles.button, styles.updateButton]}
-            onPress={() => {
-              /* TODO: Handle update */
-            }}>
+            onPress={() => setIsEditModalVisible(true)}>
             <Text style={styles.updateButtonText}>Cập nhật</Text>
           </TouchableOpacity>
         </View>
