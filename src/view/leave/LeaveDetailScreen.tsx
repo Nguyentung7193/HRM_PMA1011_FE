@@ -15,10 +15,15 @@ import metrics from '../../constants/metrics';
 import {RootStackParamList} from '../../navigation/type';
 import {
   LeaveRequest,
+<<<<<<< HEAD
   LeaveType,
   UpdateLeaveRequest,
   getLeaveDetail,
   updateLeaveRequest,
+=======
+  getLeaveDetail,
+  deleteLeaveRequest,
+>>>>>>> 90903fddaa9869a93d45f6441f23eae2307bd270
 } from '../../service/api/ApiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditLeaveModal from '../../components/EditLeaveModal';
@@ -81,6 +86,7 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
     navigation.goBack();
   };
 
+<<<<<<< HEAD
   const handleUpdate = async (data: UpdateLeaveRequest) => {
     try {
       setLoading(true);
@@ -108,6 +114,39 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
     } finally {
       setLoading(false);
     }
+=======
+  const handleDelete = async () => {
+    Alert.alert('Xác nhận xoá', 'Bạn có chắc chắn muốn xoá đơn xin nghỉ này?', [
+      {
+        text: 'Huỷ',
+        style: 'cancel',
+      },
+      {
+        text: 'Xoá',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            setLoading(true);
+            const token = await AsyncStorage.getItem('auth_token');
+
+            if (!token) {
+              setError('Phiên đăng nhập đã hết hạn');
+              return;
+            }
+
+            await deleteLeaveRequest(token, leaveId);
+            navigation.goBack(); // Return to list screen
+          } catch (err: any) {
+            const errorMessage =
+              err.response?.data?.message || 'Không thể xoá đơn xin nghỉ';
+            Alert.alert('Lỗi', errorMessage);
+          } finally {
+            setLoading(false);
+          }
+        },
+      },
+    ]);
+>>>>>>> 90903fddaa9869a93d45f6441f23eae2307bd270
   };
 
   if (loading) {
@@ -211,9 +250,7 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
         <View style={styles.footer}>
           <TouchableOpacity
             style={[styles.button, styles.cancelButton]}
-            onPress={() => {
-              /* TODO: Handle cancel */
-            }}>
+            onPress={handleDelete}>
             <Text style={styles.cancelButtonText}>Huỷ đơn</Text>
           </TouchableOpacity>
 
