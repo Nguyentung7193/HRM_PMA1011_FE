@@ -10,17 +10,19 @@ const api = axios.create({
   },
 });
 
+export type LeaveType = 'sick' | 'annual';
+
 export interface LeaveRequest {
   _id: string;
   employeeId: {
     _id: string;
     email: string;
   };
-  type: string;
+  type: LeaveType; // Update this to use LeaveType
   reason: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: 'pending' | 'approved';
   createdAt: string;
 }
 
@@ -164,6 +166,31 @@ export const getLeaveDetail = async (
     return response.data.data;
   } catch (error) {
     console.error('Get leave detail error:', error);
+    throw error;
+  }
+};
+
+export interface UpdateLeaveRequest {
+  type: LeaveType;
+  reason: string;
+  startDate: string;
+  endDate: string;
+}
+
+export const updateLeaveRequest = async (
+  token: string,
+  leaveId: string,
+  data: UpdateLeaveRequest,
+) => {
+  try {
+    const response = await api.put(`/leave-requests/${leaveId}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Update leave request error:', error);
     throw error;
   }
 };
