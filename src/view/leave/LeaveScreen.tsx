@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import metrics from '../../constants/metrics';
-import { TabScreenNavigationProp } from '../../navigation/type';
-import { getLeaveRequests, LeaveRequest } from '../../service/api/ApiService';
+import {TabScreenNavigationProp} from '../../navigation/type';
+import {getLeaveRequests, LeaveRequest} from '../../service/api/ApiService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const getLeaveTypeText = (type: string) => {
   switch (type) {
@@ -39,7 +48,14 @@ const LeaveScreen = () => {
   const fetchLeaveRequests = async () => {
     try {
       setLoading(true);
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODNmZjBkYzQ5Y2Y1N2U3NWM2NWNiZjMiLCJlbWFpbCI6InRlc3QxQGV4YW1wbGUuY29tIiwiaWF0IjoxNzQ5MTYyMDY1LCJleHAiOjE3NDkyNDg0NjV9.DyD-BK5wSGzf9nH0qofaaS5_fOKf_Pb7VSCC2_udrkQ';
+      const token = await AsyncStorage.getItem('auth_token');
+
+      if (!token) {
+        setError('Phiên đăng nhập đã hết hạn');
+        navigation.replace('SignInScreen');
+        return;
+      }
+
       const data = await getLeaveRequests(token);
       setLeaveRequests(data);
     } catch (err) {
@@ -53,8 +69,12 @@ const LeaveScreen = () => {
     return new Date(dateString).toLocaleDateString('vi-VN');
   };
 
-  const renderItem = ({ item }: { item: LeaveRequest }) => (
-    <View style={styles.leaveItem}>
+  const renderItem = ({item}: {item: LeaveRequest}) => (
+    <TouchableOpacity
+      style={styles.leaveItem}
+      onPress={() =>
+        navigation.navigate('LeaveDetailScreen', {leaveId: item._id})
+      }>
       <View style={styles.leaveInfo}>
         <Text style={styles.leaveType}>{getLeaveTypeText(item.type)}</Text>
         <Text style={styles.leaveDate}>
@@ -63,17 +83,18 @@ const LeaveScreen = () => {
         <Text style={styles.leaveReason}>{item.reason}</Text>
       </View>
       <View style={styles.statusContainer}>
-        <Text style={[
-          styles.leaveStatus,
-          { color: item.status === 'approved' ? '#4CAF50' : '#FFC107' }
-        ]}>
+        <Text
+          style={[
+            styles.leaveStatus,
+            {color: item.status === 'approved' ? '#4CAF50' : '#FFC107'},
+          ]}>
           {item.status === 'approved' ? 'Đã duyệt' : 'Chờ duyệt'}
         </Text>
         <Text style={styles.createdAt}>
           {new Date(item.createdAt).toLocaleDateString('vi-VN')}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   if (loading) {
@@ -88,7 +109,9 @@ const LeaveScreen = () => {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={fetchLeaveRequests}>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={fetchLeaveRequests}>
           <Text style={styles.retryText}>Thử lại</Text>
         </TouchableOpacity>
       </View>
@@ -97,13 +120,13 @@ const LeaveScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate('CreateLeaveScreen')}>
         <Icon name="add-circle" size={metrics.ms(24)} color="#2196F3" />
         <Text style={styles.addButtonText}>Tạo đơn xin nghỉ</Text>
       </TouchableOpacity>
-      
+
       <FlatList
         data={leaveRequests}
         renderItem={renderItem}
