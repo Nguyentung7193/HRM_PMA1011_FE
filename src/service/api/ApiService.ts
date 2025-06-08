@@ -168,4 +168,18 @@ export const getLeaveDetail = async (
   }
 };
 
+export const deleteLeaveRequest = async (token: string, leaveId: string) => {
+  try {
+    const response = await api.delete(`/leave-requests/${leaveId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Delete leave request error:', error);
+    throw error;
+  }
+};
+
 // test git
