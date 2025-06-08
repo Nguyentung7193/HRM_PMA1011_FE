@@ -49,7 +49,7 @@ export const getLeaveRequests = async (token: string) => {
     console.error('API Error:', error);
     throw error;
   }
-}
+};
 
 interface CreateLeaveRequest {
   type: 'sick' | 'annual';
@@ -58,7 +58,10 @@ interface CreateLeaveRequest {
   endDate: string;
 }
 
-export const createLeaveRequest = async (token: string, data: CreateLeaveRequest) => {
+export const createLeaveRequest = async (
+  token: string,
+  data: CreateLeaveRequest,
+) => {
   try {
     const response = await api.post('/leave-requests', data, {
       headers: {
@@ -135,6 +138,32 @@ export const getNotifications = async (token: string) => {
     return response.data.data;
   } catch (error) {
     console.error('Get notifications error:', error);
+    throw error;
+  }
+};
+
+interface LeaveDetailResponse {
+  success: boolean;
+  message: string;
+  data: LeaveRequest;
+}
+
+export const getLeaveDetail = async (
+  token: string,
+  leaveId: string,
+): Promise<LeaveRequest> => {
+  try {
+    const response = await api.get<LeaveDetailResponse>(
+      `/leave-requests/${leaveId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error('Get leave detail error:', error);
     throw error;
   }
 };

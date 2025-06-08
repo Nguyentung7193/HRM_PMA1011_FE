@@ -107,6 +107,7 @@ const NotificationScreen = ({navigation}: Props) => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: metrics.vs(30),
     flex: 1,
     backgroundColor: '#fff',
   },

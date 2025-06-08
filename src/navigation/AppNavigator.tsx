@@ -5,6 +5,7 @@ import HomeScreen from '../view/home/HomeScreen';
 import SignInScreen from '../view/auth/sign-in/SignInScreen';
 import CreateLeaveScreen from '../view/leave/CreateLeaveScreen';
 import NotificationScreen from '../view/notification/NotificationScreen';
+import LeaveDetailScreen from '../view/leave/LeaveDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -12,11 +13,13 @@ const AppNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName="SignInScreen"
-      screenOptions={{headerShown: false}}>
+      screenOptions={{headerShown: false}}
+      >
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen name="SignInScreen" component={SignInScreen} />
       <Stack.Screen name="CreateLeaveScreen" component={CreateLeaveScreen} />
       <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
+      <Stack.Screen name="LeaveDetailScreen" component={LeaveDetailScreen} />
     </Stack.Navigator>
   );
 };

@@ -15,6 +15,9 @@ export type RootStackParamList = {
   HomeScreen: undefined;
   CreateLeaveScreen: undefined;
   NotificationScreen: undefined;
+  LeaveDetailScreen: {
+    leaveId: string;
+  };
 };
 
 export type TabScreenNavigationProp = CompositeNavigationProp<
