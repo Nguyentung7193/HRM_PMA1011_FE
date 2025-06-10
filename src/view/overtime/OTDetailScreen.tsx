@@ -13,42 +13,24 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import metrics from '../../constants/metrics';
 import {RootStackParamList} from '../../navigation/type';
-import {
-  LeaveRequest,
-  LeaveType,
-  UpdateLeaveRequest,
-  deleteLeaveRequest,
-  getLeaveDetail,
-  updateLeaveRequest,
-} from '../../service/api/ApiService';
+import {OTReport, getOTDetail, updateOTReport} from '../../service/api/ApiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import EditLeaveModal from '../../components/EditLeaveModal';
+import EditOTModal from '../../components/EditOTModal';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'LeaveDetailScreen'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'OTDetailScreen'>;
 
-const getLeaveTypeText = (type: LeaveType) => {
-  switch (type) {
-    case 'sick':
-      return 'Nghỉ ốm';
-    case 'annual':
-      return 'Nghỉ phép';
-    default:
-      return type;
-  }
-};
-
-const LeaveDetailScreen = ({route, navigation}: Props) => {
-  const {leaveId} = route.params;
-  const [leave, setLeave] = useState<LeaveRequest | null>(null);
+const OTDetailScreen = ({route, navigation}: Props) => {
+  const {otId} = route.params;
+  const [report, setReport] = useState<OTReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   useEffect(() => {
-    fetchLeaveDetail();
-  }, [leaveId]);
+    fetchOTDetail();
+  }, [otId]);
 
-  const fetchLeaveDetail = async () => {
+  const fetchOTDetail = async () => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem('auth_token');
@@ -59,11 +41,11 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
         return;
       }
 
-      const data = await getLeaveDetail(token, leaveId);
-      setLeave(data);
+      const data = await getOTDetail(token, otId);
+      setReport(data);
     } catch (err: any) {
       const errorMessage =
-        err.response?.data?.message || 'Không thể tải thông tin đơn xin nghỉ';
+        err.response?.data?.message || 'Không thể tải thông tin báo cáo OT';
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -74,72 +56,43 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
     return new Date(dateString).toLocaleDateString('vi-VN');
   };
 
-  const getStatusColor = (status: string) => {
-    return status === 'approved' ? '#4CAF50' : '#FFC107';
-  };
-
   const handleBack = () => {
     navigation.goBack();
   };
 
-  const handleUpdate = async (data: UpdateLeaveRequest) => {
-    try {
-      setLoading(true);
-      const token = await AsyncStorage.getItem('auth_token');
-
-      if (!token) {
-        setError('Phiên đăng nhập đã hết hạn');
-        return;
-      }
-
-      await updateLeaveRequest(token, leaveId, data);
-      setIsEditModalVisible(false);
-      await fetchLeaveDetail();
-
-      Alert.alert('Thành công', 'Cập nhật đơn xin nghỉ thành công', [
+  const handleDelete = () => {
+    Alert.alert(
+      'Xác nhận xoá',
+      'Bạn có chắc chắn muốn xoá báo cáo OT này?',
+      [
         {
-          text: 'OK',
-          onPress: () => console.log('Update success alert closed'),
+          text: 'Huỷ',
+          style: 'cancel',
         },
-      ]);
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || 'Không thể cập nhật đơn xin nghỉ';
-      Alert.alert('Lỗi', errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handleDelete = async () => {
-    Alert.alert('Xác nhận xoá', 'Bạn có chắc chắn muốn xoá đơn xin nghỉ này?', [
-      {
-        text: 'Huỷ',
-        style: 'cancel',
-      },
-      {
-        text: 'Xoá',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            setLoading(true);
-            const token = await AsyncStorage.getItem('auth_token');
-
-            if (!token) {
-              setError('Phiên đăng nhập đã hết hạn');
-              return;
+        {
+          text: 'Xoá',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              const token = await AsyncStorage.getItem('auth_token');
+              if (!token) {
+                setError('Phiên đăng nhập đã hết hạn');
+                return;
+              }
+              // TODO: Implement delete API call
+              navigation.goBack();
+            } catch (err: any) {
+              const errorMessage =
+                err.response?.data?.message || 'Không thể xoá báo cáo OT';
+              Alert.alert('Lỗi', errorMessage);
+            } finally {
+              setLoading(false);
             }
-            await deleteLeaveRequest(token, leaveId);
-            navigation.goBack(); // Return to list screen
-          } catch (err: any) {
-            const errorMessage =
-              err.response?.data?.message || 'Không thể xoá đơn xin nghỉ';
-            Alert.alert('Lỗi', errorMessage);
-          } finally {
-            setLoading(false);
-          }
+          },
         },
-      },
-    ]);
+      ],
+    );
   };
 
   if (loading) {
@@ -150,13 +103,13 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
     );
   }
 
-  if (error || !leave) {
+  if (error || !report) {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <Text style={styles.errorText}>
-          {error || 'Không tìm thấy đơn xin nghỉ'}
+          {error || 'Không tìm thấy báo cáo OT'}
         </Text>
-        <TouchableOpacity style={styles.retryButton} onPress={fetchLeaveDetail}>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchOTDetail}>
           <Text style={styles.retryText}>Thử lại</Text>
         </TouchableOpacity>
       </View>
@@ -169,17 +122,22 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
           <Icon name="arrow-back" size={metrics.ms(24)} color="#2196F3" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Chi tiết đơn xin nghỉ</Text>
+        <Text style={styles.headerTitle}>Chi tiết báo cáo OT</Text>
         <View style={{width: metrics.s(24)}} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Loại nghỉ phép</Text>
-            <Text style={styles.sectionContent}>
-              {getLeaveTypeText(leave.type)}
-            </Text>
+            <Text style={styles.sectionTitle}>Dự án</Text>
+            <Text style={styles.sectionContent}>{report.project}</Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Ngày làm việc</Text>
+            <Text style={styles.sectionContent}>{formatDate(report.date)}</Text>
           </View>
 
           <View style={styles.divider} />
@@ -187,15 +145,22 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Thời gian</Text>
             <Text style={styles.sectionContent}>
-              {`${formatDate(leave.startDate)} - ${formatDate(leave.endDate)}`}
+              {`${report.startTime} - ${report.endTime} (${report.totalHours}h)`}
             </Text>
           </View>
 
           <View style={styles.divider} />
 
           <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Công việc</Text>
+            <Text style={styles.sectionContent}>{report.tasks}</Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.section}>
             <Text style={styles.sectionTitle}>Lý do</Text>
-            <Text style={styles.sectionContent}>{leave.reason}</Text>
+            <Text style={styles.sectionContent}>{report.reason}</Text>
           </View>
 
           <View style={styles.divider} />
@@ -206,9 +171,9 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
               <Text
                 style={[
                   styles.statusText,
-                  {color: getStatusColor(leave.status)},
+                  {color: report.status === 'approved' ? '#4CAF50' : '#FFC107'},
                 ]}>
-                {leave.status === 'approved' ? 'Đã duyệt' : 'Chờ duyệt'}
+                {report.status === 'approved' ? 'Đã duyệt' : 'Chờ duyệt'}
               </Text>
             </View>
           </View>
@@ -218,7 +183,7 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Ngày tạo</Text>
             <Text style={styles.sectionContent}>
-              {new Date(leave.createdAt).toLocaleDateString('vi-VN', {
+              {new Date(report.createdAt).toLocaleDateString('vi-VN', {
                 hour: '2-digit',
                 minute: '2-digit',
               })}
@@ -227,29 +192,51 @@ const LeaveDetailScreen = ({route, navigation}: Props) => {
         </View>
       </ScrollView>
 
-      <EditLeaveModal
+      <EditOTModal
         visible={isEditModalVisible}
         onClose={() => setIsEditModalVisible(false)}
-        onSubmit={handleUpdate}
+        onSubmit={async (data) => {
+          try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+              setError('Phiên đăng nhập đã hết hạn');
+              return;
+            }
+            await updateOTReport(token, otId, data);
+            setIsEditModalVisible(false);
+            await fetchOTDetail();
+            Alert.alert('Thành công', 'Cập nhật báo cáo OT thành công');
+          } catch (err: any) {
+            const errorMessage =
+              err.response?.data?.message || 'Không thể cập nhật báo cáo OT';
+            Alert.alert('Lỗi', errorMessage);
+          }
+        }}
         initialData={{
-          type: leave.type,
-          reason: leave.reason,
-          startDate: leave.startDate.split('T')[0],
-          endDate: leave.endDate.split('T')[0],
+          date: report.date.split('T')[0],
+          startTime: report.startTime,
+          endTime: report.endTime,
+          totalHours: report.totalHours,
+          reason: report.reason,
+          project: report.project,
+          tasks: report.tasks,
         }}
       />
 
-      {leave.status === 'pending' && (
+      {report.status === 'pending' && (
         <View style={styles.footer}>
           <TouchableOpacity
             style={[styles.button, styles.cancelButton]}
             onPress={handleDelete}>
-            <Text style={styles.cancelButtonText}>Huỷ đơn</Text>
+            <Text style={styles.cancelButtonText}>Huỷ</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.button, styles.updateButton]}
-            onPress={() => setIsEditModalVisible(true)}>
+            onPress={() => {
+              console.log('Opening modal...'); // Thêm log để debug
+              setIsEditModalVisible(true);
+            }}>
             <Text style={styles.updateButtonText}>Cập nhật</Text>
           </TouchableOpacity>
         </View>
@@ -328,6 +315,26 @@ const styles = StyleSheet.create({
     fontSize: metrics.ms(14),
     fontWeight: '600',
   },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: metrics.ms(16),
+    color: 'red',
+    marginBottom: metrics.vs(16),
+  },
+  retryButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: metrics.vs(12),
+    paddingHorizontal: metrics.s(24),
+    borderRadius: metrics.s(8),
+  },
+  retryText: {
+    color: '#fff',
+    fontSize: metrics.ms(16),
+    fontWeight: '500',
+  },
   footer: {
     flexDirection: 'row',
     padding: metrics.s(16),
@@ -362,26 +369,6 @@ const styles = StyleSheet.create({
     fontSize: metrics.ms(16),
     fontWeight: '600',
   },
-  centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    fontSize: metrics.ms(16),
-    color: 'red',
-    marginBottom: metrics.vs(16),
-  },
-  retryButton: {
-    backgroundColor: '#2196F3',
-    paddingVertical: metrics.vs(12),
-    paddingHorizontal: metrics.s(24),
-    borderRadius: metrics.s(8),
-  },
-  retryText: {
-    color: '#fff',
-    fontSize: metrics.ms(16),
-    fontWeight: '500',
-  },
 });
 
-export default LeaveDetailScreen;
+export default OTDetailScreen;

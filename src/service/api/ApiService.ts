@@ -209,4 +209,120 @@ export const updateLeaveRequest = async (
     console.error('Update leave request error:', error);
     throw error;
   }
+}
+
+export interface OTReport {
+  _id: string;
+  employeeId: {
+    _id: string;
+    email: string;
+  };
+  date: string;
+  startTime: string;
+  endTime: string;
+  totalHours: number;
+  reason: string;
+  status: 'pending' | 'approved';
+  project: string;
+  tasks: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface OTResponse {
+  success: boolean;
+  data: {
+    reports: OTReport[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalRecords: number;
+      limit: number;
+    };
+  };
+}
+
+export const getOTReports = async (token: string) => {
+  try {
+    const response = await api.get<OTResponse>('/ot-reports', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data.reports;
+  } catch (error) {
+    console.error('Get OT reports error:', error);
+    throw error;
+  }
+};
+
+interface OTDetailResponse {
+  success: boolean;
+  data: OTReport;
+}
+
+export const getOTDetail = async (token: string, otId: string): Promise<OTReport> => {
+  try {
+    const response = await api.get<OTDetailResponse>(`/ot-reports/${otId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error('Get OT detail error:', error);
+    throw error;
+  }
+};
+
+export interface UpdateOTRequest {
+  date: string;
+  startTime: string;
+  endTime: string;
+  totalHours: number;
+  reason: string;
+  project: string;
+  tasks: string;
+}
+
+export const updateOTReport = async (
+  token: string,
+  otId: string,
+  data: UpdateOTRequest,
+) => {
+  try {
+    const response = await api.put(`/ot-reports/${otId}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Update OT report error:', error);
+    throw error;
+  }
+};
+
+export interface CreateOTRequest {
+  date: string;
+  startTime: string;
+  endTime: string;
+  totalHours: number;
+  reason: string;
+  project: string;
+  tasks: string;
+}
+
+export const createOTReport = async (token: string, data: CreateOTRequest) => {
+  try {
+    const response = await api.post('/ot-reports', data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Create OT report error:', error);
+    throw error;
+  }
 };
