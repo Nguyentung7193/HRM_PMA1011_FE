@@ -302,3 +302,27 @@ export const updateOTReport = async (
     throw error;
   }
 };
+
+export interface CreateOTRequest {
+  date: string;
+  startTime: string;
+  endTime: string;
+  totalHours: number;
+  reason: string;
+  project: string;
+  tasks: string;
+}
+
+export const createOTReport = async (token: string, data: CreateOTRequest) => {
+  try {
+    const response = await api.post('/ot-reports', data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Create OT report error:', error);
+    throw error;
+  }
+};
