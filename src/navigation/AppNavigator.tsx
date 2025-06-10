@@ -6,6 +6,8 @@ import SignInScreen from '../view/auth/sign-in/SignInScreen';
 import CreateLeaveScreen from '../view/leave/CreateLeaveScreen';
 import NotificationScreen from '../view/notification/NotificationScreen';
 import LeaveDetailScreen from '../view/leave/LeaveDetailScreen';
+import OTDetailScreen from '../view/overtime/OTDetailScreen';
+import OvertimeScreen from '../view/overtime/OvertimeScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -20,6 +22,8 @@ const AppNavigator = () => {
       <Stack.Screen name="CreateLeaveScreen" component={CreateLeaveScreen} />
       <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
       <Stack.Screen name="LeaveDetailScreen" component={LeaveDetailScreen} />
+      <Stack.Screen name="OTDetailScreen" component={OTDetailScreen} />
+      <Stack.Screen name="OvertimeScreen" component={OvertimeScreen}/>
     </Stack.Navigator>
   );
 };

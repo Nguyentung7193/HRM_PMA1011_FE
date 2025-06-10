@@ -1,6 +1,6 @@
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { CompositeNavigationProp } from '@react-navigation/native';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {CompositeNavigationProp} from '@react-navigation/native';
 
 export type BottomTabParamList = {
   Schedule: undefined;
@@ -17,6 +17,11 @@ export type RootStackParamList = {
   NotificationScreen: undefined;
   LeaveDetailScreen: {
     leaveId: string;
+  };
+  OvertimeScreen: undefined;
+  CreateOTScreen: undefined;
+  OTDetailScreen: {
+    otId: string;
   };
 };
 
