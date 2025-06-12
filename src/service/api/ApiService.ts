@@ -209,7 +209,7 @@ export const updateLeaveRequest = async (
     console.error('Update leave request error:', error);
     throw error;
   }
-}
+};
 
 export interface OTReport {
   _id: string;
@@ -261,7 +261,10 @@ interface OTDetailResponse {
   data: OTReport;
 }
 
-export const getOTDetail = async (token: string, otId: string): Promise<OTReport> => {
+export const getOTDetail = async (
+  token: string,
+  otId: string,
+): Promise<OTReport> => {
   try {
     const response = await api.get<OTDetailResponse>(`/ot-reports/${otId}`, {
       headers: {
@@ -323,6 +326,82 @@ export const createOTReport = async (token: string, data: CreateOTRequest) => {
     return response.data;
   } catch (error) {
     console.error('Create OT report error:', error);
+    throw error;
+  }
+};
+
+export interface TimeLog {
+  checkIn: string;
+  checkOut: string;
+  duration: number;
+  _id: string;
+}
+
+export interface AttendanceRecord {
+  _id: string;
+  employeeId: {
+    _id: string;
+    email: string;
+  };
+  date: string;
+  checkIn: string;
+  checkOut: string;
+  totalHours: number;
+  status: 'pending' | 'completed';
+  createdAt: string;
+  updatedAt: string;
+  timeLogs: TimeLog[];
+}
+
+interface AttendanceHistoryResponse {
+  success: boolean;
+  data: {
+    records: AttendanceRecord[];
+    statistics: {
+      totalDays: number;
+      completedDays: number;
+      averageHours: number;
+    };
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalRecords: number;
+      limit: number;
+    };
+  };
+}
+
+export const checkAttendance = async (token: string) => {
+  try {
+    const response = await api.post(
+      '/attendance/check',
+      {}, // Empty body
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Check attendance error:', error);
+    throw error;
+  }
+};
+
+export const getAttendanceHistory = async (token: string) => {
+  try {
+    const response = await api.get<AttendanceHistoryResponse>(
+      '/attendance/history',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error('Get attendance history error:', error);
     throw error;
   }
 };
