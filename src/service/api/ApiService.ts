@@ -405,3 +405,59 @@ export const getAttendanceHistory = async (token: string) => {
     throw error;
   }
 };
+
+export interface Employee {
+  _id: string;
+  email: string;
+}
+
+export interface ShiftEmployee {
+  employeeId: Employee;
+  name: string;
+  position: string;
+}
+
+export interface DayShifts {
+  morning: ShiftEmployee[];
+  afternoon: ShiftEmployee[];
+}
+
+export interface ScheduleDay {
+  shifts: DayShifts;
+  date: string;
+}
+
+export interface Schedule {
+  _id: string;
+  weekStart: string;
+  weekEnd: string;
+  days: ScheduleDay[];
+  createdBy: string;
+  createdAt: string;
+}
+
+interface ScheduleResponse {
+  success: boolean;
+  currentDate: string;
+  data: Schedule;
+  message: string;
+  weekInfo: {
+    weekStart: string;
+    weekEnd: string;
+    isCurrentWeek: boolean;
+  };
+}
+
+export const getWeeklySchedule = async (token: string) => {
+  try {
+    const response = await api.get<ScheduleResponse>('/schedules/current', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Get schedule error:', error);
+    throw error;
+  }
+};
