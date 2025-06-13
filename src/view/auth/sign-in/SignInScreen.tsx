@@ -29,13 +29,25 @@ const SignInScreen = ({navigation}: Props) => {
         Alert.alert('Lỗi', 'Không thể lấy được token thiết bị');
         return;
       }
+
       const response = await login({
         email,
         password,
         fcmToken,
       });
-      await AsyncStorage.setItem('auth_token', response.accessToken);
-      navigation.replace('HomeScreen');
+
+      // Save auth token
+      await AsyncStorage.setItem('auth_token', response.data.token);
+
+      // Save user role for future use
+      await AsyncStorage.setItem('user_role', response.data.user.role);
+
+      // Navigate based on role
+      if (response.data.user.role === 'admin') {
+        navigation.replace('HomeAdminScreen');
+      } else {
+        navigation.replace('HomeScreen');
+      }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Đã có lỗi xảy ra';
       Alert.alert('Lỗi đăng nhập', errorMessage);

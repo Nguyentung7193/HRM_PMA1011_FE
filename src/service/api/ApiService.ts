@@ -84,7 +84,16 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  accessToken: string;
+  success: boolean;
+  message: string;
+  data: {
+    token: string;
+    user: {
+      id: string;
+      email: string;
+      role: 'admin' | 'user';
+    }
+  }
 }
 
 export const login = async (data: LoginRequest) => {

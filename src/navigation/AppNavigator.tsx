@@ -9,6 +9,7 @@ import LeaveDetailScreen from '../view/leave/LeaveDetailScreen';
 import OTDetailScreen from '../view/overtime/OTDetailScreen';
 import OvertimeScreen from '../view/overtime/OvertimeScreen';
 import CreateOTScreen from '../view/overtime/CreateOTScreen';
+import HomeAdminScreen from '../view/admin/home/HomeAdminScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -26,6 +27,8 @@ const AppNavigator = () => {
       <Stack.Screen name="OTDetailScreen" component={OTDetailScreen} />
       <Stack.Screen name="OvertimeScreen" component={OvertimeScreen}/>
       <Stack.Screen name="CreateOTScreen" component={CreateOTScreen} />
+      {/* từ đây xuống là màn hình cho admin */}
+      <Stack.Screen name="HomeAdminScreen" component={HomeAdminScreen} />
     </Stack.Navigator>
   );
 };
