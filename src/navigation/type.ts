@@ -23,6 +23,7 @@ export type RootStackParamList = {
   OTDetailScreen: {
     otId: string;
   };
+  HomeAdminScreen: undefined;
 };
 
 export type TabScreenNavigationProp = CompositeNavigationProp<
