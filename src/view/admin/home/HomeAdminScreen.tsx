@@ -43,7 +43,7 @@ const menuItems: MenuItem[] = [
     title: 'OT',
     description: 'Quản lý làm thêm giờ',
     icon: 'time',
-    screen: 'AdminOTScreen',
+    screen: 'AdminOTReportScreen',
     color: '#FF9800',
   },
   {

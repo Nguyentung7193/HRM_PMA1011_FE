@@ -29,6 +29,10 @@ export type RootStackParamList = {
   AdminLeaveDetailScreen: {
     id: string;
   };
+  AdminOTReportScreen: undefined;
+  AdminOTReportDetailScreen: {
+    id: string;
+  };
 };
 
 export type TabScreenNavigationProp = CompositeNavigationProp<
