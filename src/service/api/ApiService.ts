@@ -562,3 +562,47 @@ export const getLeaveRequestDetailAdmin = async (token: string, id: string) => {
     throw error;
   }
 };
+
+export const approveLeaveRequest = async (
+  token: string,
+  id: string,
+  note: string,
+) => {
+  try {
+    const response = await api.post(
+      `/leave-requests/admin/approve/${id}`,
+      {note},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Approve leave request error:', error);
+    throw error;
+  }
+};
+
+export const rejectLeaveRequest = async (
+  token: string,
+  id: string,
+  reason: string,
+) => {
+  try {
+    const response = await api.post(
+      `/leave-requests/admin/reject/${id}`,
+      {reason},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Reject leave request error:', error);
+    throw error;
+  }
+};
