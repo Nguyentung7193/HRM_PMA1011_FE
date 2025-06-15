@@ -61,7 +61,7 @@ interface CreateLeaveRequest {
 }
 
 export const createLeaveRequest = async (
-  token: string,
+  token: string | null,
   data: CreateLeaveRequest,
 ) => {
   try {
@@ -92,8 +92,8 @@ interface LoginResponse {
       id: string;
       email: string;
       role: 'admin' | 'user';
-    }
-  }
+    };
+  };
 }
 
 export const login = async (data: LoginRequest) => {
@@ -467,6 +467,98 @@ export const getWeeklySchedule = async (token: string) => {
     return response.data;
   } catch (error) {
     console.error('Get schedule error:', error);
+    throw error;
+  }
+};
+
+// Add these interfaces
+export interface AdminLeaveRequest {
+  _id: string;
+  employeeId: {
+    _id: string;
+    email: string;
+    name: string;
+    position: string;
+  };
+  type: LeaveType;
+  reason: string;
+  startDate: string;
+  endDate: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+}
+
+interface AdminLeaveResponse {
+  success: boolean;
+  data: {
+    requests: AdminLeaveRequest[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalRecords: number;
+      limit: number;
+    };
+  };
+}
+
+// Add this function
+export const getAdminLeaveRequests = async (token: string) => {
+  try {
+    const response = await api.get<AdminLeaveResponse>(
+      '/leave-requests/admin/all',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error('Get admin leave requests error:', error);
+    throw error;
+  }
+};
+
+export interface LeaveRequestDetail {
+  _id: string;
+  employeeId: {
+    _id: string;
+    email: string;
+    role: string;
+    fcmToken: string | null;
+    createdAt: string;
+  };
+  type: LeaveType;
+  reason: string;
+  startDate: string;
+  endDate: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+  canApprove: boolean;
+  requestAge: number;
+  totalDays: number;
+  employee: {
+    id: string;
+    email: string;
+    role: string;
+    accountCreated: string;
+  };
+}
+
+export const getLeaveRequestDetailAdmin = async (token: string, id: string) => {
+  try {
+    const response = await api.get<{
+      success: boolean;
+      message: string;
+      data: LeaveRequestDetail;
+    }>(`/leave-requests/admin/details/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error('Get leave request detail error:', error);
     throw error;
   }
 };

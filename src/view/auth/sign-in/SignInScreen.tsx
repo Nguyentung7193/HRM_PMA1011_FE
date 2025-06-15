@@ -35,7 +35,6 @@ const SignInScreen = ({navigation}: Props) => {
         password,
         fcmToken,
       });
-
       // Save auth token
       await AsyncStorage.setItem('auth_token', response.data.token);
 
