@@ -13,6 +13,7 @@ import metrics from '../../constants/metrics';
 import {RootStackParamList} from '../../navigation/type';
 import CustomInput from '../../components/CustomInput';
 import {createLeaveRequest} from '../../service/api/ApiService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateLeaveScreen'>;
 
@@ -34,8 +35,8 @@ const CreateLeaveScreen = ({navigation}: Props) => {
         return;
       }
 
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODNmZjBkYzQ5Y2Y1N2U3NWM2NWNiZjMiLCJlbWFpbCI6InRlc3QxQGV4YW1wbGUuY29tIiwiaWF0IjoxNzQ5MTYyMDY1LCJleHAiOjE3NDkyNDg0NjV9.DyD-BK5wSGzf9nH0qofaaS5_fOKf_Pb7VSCC2_udrkQ'; // Replace with your token management
-
+      // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODNmZjBkYzQ5Y2Y1N2U3NWM2NWNiZjMiLCJlbWFpbCI6InRlc3QxQGV4YW1wbGUuY29tIiwiaWF0IjoxNzQ5MTYyMDY1LCJleHAiOjE3NDkyNDg0NjV9.DyD-BK5wSGzf9nH0qofaaS5_fOKf_Pb7VSCC2_udrkQ'; // Replace with your token management
+      const token = await AsyncStorage.getItem('auth_token');
       await createLeaveRequest(token, {
         type,
         reason,
