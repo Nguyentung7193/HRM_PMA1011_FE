@@ -12,6 +12,8 @@ import CreateOTScreen from '../view/overtime/CreateOTScreen';
 import HomeAdminScreen from '../view/admin/home/HomeAdminScreen';
 import AdminLeaveScreen from '../view/admin/leave/AdminLeaveScreen';
 import AdminLeaveDetailScreen from '../view/admin/leave/AdminLeaveDetailScreen';
+import AdminOTReportScreen from '../view/admin/ot/AdminOTReportScreen';
+import AdminOTReportDetailScreen from '../view/admin/ot/AdminOTReportDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -33,6 +35,8 @@ const AppNavigator = () => {
       <Stack.Screen name="HomeAdminScreen" component={HomeAdminScreen} />
       <Stack.Screen name="AdminLeaveScreen" component={AdminLeaveScreen} />
       <Stack.Screen name="AdminLeaveDetailScreen" component={AdminLeaveDetailScreen} />
+      <Stack.Screen name="AdminOTReportScreen" component={AdminOTReportScreen} />
+      <Stack.Screen name="AdminOTReportDetailScreen" component={AdminOTReportDetailScreen} />
     </Stack.Navigator>
   );
 };

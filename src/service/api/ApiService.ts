@@ -606,3 +606,141 @@ export const rejectLeaveRequest = async (
     throw error;
   }
 };
+
+export interface AdminOTReport {
+  _id: string;
+  employeeId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  totalHours: number;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
+  project: string;
+  tasks: string;
+  createdAt: string;
+  updatedAt: string;
+  employee: {
+    _id: string;
+    email: string;
+    role: string;
+  };
+  employeeEmail: string;
+}
+
+interface AdminOTResponse {
+  success: boolean;
+  message: string;
+  data: {
+    reports: AdminOTReport[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalRecords: number;
+      limit: number;
+    };
+  };
+}
+
+export const getAdminOTReports = async (token: string) => {
+  try {
+    const response = await api.get<AdminOTResponse>('/ot-reports/admin/all', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error('Get admin OT reports error:', error);
+    throw error;
+  }
+};
+
+export interface AdminOTReportDetail {
+  _id: string;
+  employeeId: {
+    _id: string;
+    email: string;
+    role: string;
+    fcmToken: string | null;
+    createdAt: string;
+  };
+  date: string;
+  startTime: string;
+  endTime: string;
+  totalHours: number;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+  updatedAt: string;
+  canApprove: boolean;
+  reportAge: number;
+  employee: {
+    id: string;
+    email: string;
+    role: string;
+    accountCreated: string;
+  };
+}
+
+export const getOTReportDetailAdmin = async (token: string, id: string) => {
+  try {
+    const response = await api.get<{
+      success: boolean;
+      message: string;
+      data: AdminOTReportDetail;
+    }>(`/ot-reports/admin/details/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error('Get OT report detail error:', error);
+    throw error;
+  }
+};
+
+export const approveOTReport = async (
+  token: string,
+  id: string,
+  note: string,
+) => {
+  try {
+    const response = await api.post(
+      `/ot-reports/admin/approve/${id}`,
+      {note},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Approve OT report error:', error);
+    throw error;
+  }
+};
+
+export const rejectOTReport = async (
+  token: string,
+  id: string,
+  reason: string,
+) => {
+  try {
+    const response = await api.post(
+      `/ot-reports/admin/reject/${id}`,
+      {reason},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Reject OT report error:', error);
+    throw error;
+  }
+};
