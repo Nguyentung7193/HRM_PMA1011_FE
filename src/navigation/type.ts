@@ -33,6 +33,9 @@ export type RootStackParamList = {
   AdminOTReportDetailScreen: {
     id: string;
   };
+  CurrentScheduleAdminScreen: undefined;
+  AdminAttendanceScreen: undefined;
+
 };
 
 export type TabScreenNavigationProp = CompositeNavigationProp<

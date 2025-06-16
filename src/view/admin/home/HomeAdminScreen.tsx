@@ -51,7 +51,7 @@ const menuItems: MenuItem[] = [
     title: 'Lịch làm việc',
     description: 'Sắp xếp ca làm việc',
     icon: 'calendar',
-    screen: 'AdminScheduleScreen',
+    screen: 'CurrentScheduleAdminScreen',
     color: '#9C27B0',
   },
   {
