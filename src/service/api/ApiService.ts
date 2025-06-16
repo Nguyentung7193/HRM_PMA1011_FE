@@ -744,3 +744,110 @@ export const rejectOTReport = async (
     throw error;
   }
 };
+export interface ScheduleAdmin {
+  _id: string;
+  weekStart: string;
+  weekEnd: string;
+  days: {
+    shifts: {
+      morning: {
+        employeeId: {
+          _id: string;
+          email: string;
+        };
+        name: string;
+        position: string;
+      }[];
+      afternoon: {
+        employeeId: {
+          _id: string;
+          email: string;
+        };
+        name: string;
+        position: string;
+      }[];
+    };
+    date: string;
+  }[];
+  createdBy: string;
+  createdAt: string;
+}
+
+export interface ScheduleResponseAdmin {
+  success: boolean;
+  currentDate: string;
+  data: Schedule;
+  message: string;
+  weekInfo: {
+    weekStart: string;
+    weekEnd: string;
+    isCurrentWeek: boolean;
+  };
+}
+
+export const getCurrentScheduleAdmin = async (token: string) => {
+  try {
+    const response = await api.get<ScheduleResponseAdmin>('/schedules/current', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Get current schedule error:', error);
+    throw error;
+  }
+};
+
+export interface AdminAttendanceRecord {
+  _id: string;
+  date: string;
+  timeLogs: {
+    checkIn: string;
+    checkOut: string | null;
+    duration: number;
+    _id: string;
+  }[];
+  totalHours: number;
+  status: 'active' | 'completed';
+  employee: {
+    _id: string;
+    email: string;
+  };
+}
+
+interface AdminAttendanceResponse {
+  success: boolean;
+  message: string;
+  data: {
+    records: AdminAttendanceRecord[];
+    statistics: {
+      totalEmployees: number;
+      averageHoursPerDay: number;
+      presentToday: number;
+    };
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalRecords: number;
+      limit: number;
+    };
+  };
+}
+
+export const getAdminAttendance = async (token: string) => {
+  try {
+    const response = await api.get<AdminAttendanceResponse>(
+      '/attendance/admin/all',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error('Get admin attendance error:', error);
+    throw error;
+  }
+};
