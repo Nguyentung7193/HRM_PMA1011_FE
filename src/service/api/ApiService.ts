@@ -787,11 +787,14 @@ export interface ScheduleResponseAdmin {
 
 export const getCurrentScheduleAdmin = async (token: string) => {
   try {
-    const response = await api.get<ScheduleResponseAdmin>('/schedules/current', {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const response = await api.get<ScheduleResponseAdmin>(
+      '/schedules/current',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error('Get current schedule error:', error);
@@ -848,6 +851,43 @@ export const getAdminAttendance = async (token: string) => {
     return response.data.data;
   } catch (error) {
     console.error('Get admin attendance error:', error);
+    throw error;
+  }
+};
+
+export interface CreateScheduleShift {
+  employeeId: string;
+  name: string;
+  position: string;
+}
+
+export interface CreateScheduleDay {
+  date: string;
+  shifts: {
+    morning: CreateScheduleShift[];
+    afternoon: CreateScheduleShift[];
+  };
+}
+
+export interface CreateScheduleRequest {
+  weekStart: string;
+  weekEnd: string;
+  days: CreateScheduleDay[];
+}
+
+export const createSchedule = async (
+  token: string,
+  data: CreateScheduleRequest,
+) => {
+  try {
+    const response = await api.post('/schedules', data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Create schedule error:', error);
     throw error;
   }
 };

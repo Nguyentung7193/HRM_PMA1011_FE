@@ -35,6 +35,7 @@ export type RootStackParamList = {
   };
   CurrentScheduleAdminScreen: undefined;
   AdminAttendanceScreen: undefined;
+  CreateScheduleScreen: undefined;
 
 };
 
