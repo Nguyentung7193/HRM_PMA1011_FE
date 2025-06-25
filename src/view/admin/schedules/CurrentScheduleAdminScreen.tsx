@@ -1,3 +1,4 @@
+/* eslint-disable react/self-closing-comp */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {
@@ -7,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -139,11 +141,26 @@ const CurrentScheduleAdminScreen = ({navigation}: Props) => {
           </View>
         </View>
       ))}
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() =>
+          navigation.navigate('CreateScheduleScreen')
+        }></TouchableOpacity>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  addButton: {
+    width: '100%',
+    height: 40,
+    backgroundColor: '#2196F3',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: metrics.ms(8),
+    marginTop: metrics.vs(16),
+    marginBottom: metrics.vs(16),
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
