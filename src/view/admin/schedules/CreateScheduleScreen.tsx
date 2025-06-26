@@ -245,6 +245,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     padding: metrics.s(16),
+    marginTop: metrics.vs(30),
+    marginBottom: metrics.vs(30),
   },
   header: {
     marginBottom: metrics.vs(20),
