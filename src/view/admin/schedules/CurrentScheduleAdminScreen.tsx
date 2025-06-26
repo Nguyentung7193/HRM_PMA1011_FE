@@ -143,9 +143,11 @@ const CurrentScheduleAdminScreen = ({navigation}: Props) => {
       ))}
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() =>
-          navigation.navigate('CreateScheduleScreen')
-        }></TouchableOpacity>
+        onPress={() => navigation.navigate('CreateScheduleScreen')}
+      >
+        <Icon name="add-circle-outline" size={22} color="#fff" style={{marginRight: 8}} />
+        <Text style={{color: '#fff', fontWeight: '600', fontSize: 16}}>Tạo lịch biểu</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -160,12 +162,14 @@ const styles = StyleSheet.create({
     borderRadius: metrics.ms(8),
     marginTop: metrics.vs(16),
     marginBottom: metrics.vs(16),
+    flexDirection: 'row',
   },
   container: {
     flex: 1,
     backgroundColor: '#fff',
     padding: metrics.s(16),
     marginTop: metrics.vs(30),
+    marginBottom: metrics.vs(30),
   },
   centerContent: {
     justifyContent: 'center',

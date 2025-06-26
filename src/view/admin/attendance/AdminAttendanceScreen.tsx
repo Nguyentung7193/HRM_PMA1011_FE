@@ -85,7 +85,7 @@ const AdminAttendanceScreen = ({navigation}: Props) => {
       <View style={styles.statDivider} />
       <View style={styles.statItem}>
         <Text style={styles.statValue}>
-          {statistics.averageHoursPerDay.toFixed(1)}
+          {statistics.averageHoursPerDay.toFixed(3)}
         </Text>
         <Text style={styles.statLabel}>Giờ TB/ngày</Text>
       </View>
